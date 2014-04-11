@@ -75,11 +75,11 @@ class Cuba
     prototype.call(env)
   end
 
-  def self.plugin(mixin)
+  def self.plugin(mixin, *args)
     include mixin
     extend  mixin::ClassMethods if defined?(mixin::ClassMethods)
 
-    mixin.setup(self) if mixin.respond_to?(:setup)
+    mixin.setup(self, *args) if mixin.respond_to?(:setup)
   end
 
   def self.settings

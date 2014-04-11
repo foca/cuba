@@ -66,3 +66,43 @@ scope do
     assert_response body, ["baz", "1"]
   end
 end
+
+scope do
+  module Plugin
+    def self.setup(app, resp = "x")
+      app.settings[:resp] = resp
+    end
+
+    def resp
+      settings[:resp]
+    end
+  end
+
+  test do
+    Cuba.plugin Plugin
+
+    Cuba.define do
+      on default do
+        res.write resp
+      end
+    end
+
+    _, _, body = Cuba.call({})
+
+    assert_response body, ["x"]
+  end
+
+  test do
+    Cuba.plugin Plugin, "y"
+
+    Cuba.define do
+      on default do
+        res.write resp
+      end
+    end
+
+    _, _, body = Cuba.call({})
+
+    assert_response body, ["y"]
+  end
+end
